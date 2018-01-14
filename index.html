@@ -79,7 +79,7 @@
                 <span>{{ _.truncate(note.body, { length:30 }) || 'Empty note' }}</span>
                 <span>{{wordCount}} words</span>
               </a>
-              <a href="#" class="note__delete" v-if="open">Delete note</a>
+              <a href="#" class="note__delete" v-if="open" @click.prevent="deleteNote">Delete note</a>
             </div>
             <editor
             v-if="open"
@@ -100,6 +100,10 @@
             })
 
             localStorage.setItem('notes', JSON.stringify(notes))
+          },
+
+          deleteNote () {
+            this.$emit('delete', this.note.id)
           }
         }
       }
@@ -120,7 +124,13 @@
             <a class="notes__new" href="#" @click.prevent="newNote">
               Create a new note
             </a>
-            <note v-for="note in notes" :note-object="note" :key="note.id"></note>
+            <note
+            v-for="note in notes"
+            :note-object="note"
+            :key="note.id"
+            v-on:delete="deletNote"
+
+            ></note>
           </div>
         `,
 
@@ -134,6 +144,12 @@
             localStorage.setItem('notes', JSON.stringify(this.notes))
           },
 
+          deletNote (id) {
+            this.notes = this.notes.filter((note) => {
+                  return note.id !== id
+                })
+              localStorage.setItem('notes', JSON.stringify(this.notes))
+          }
         }
       }
 
