@@ -16,7 +16,17 @@
     <script src="https://unpkg.com/vue"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
     <script>
+      let Editor = {
+        template: `
+          <textarea class="editor" rows="10" placeholder="Write a note"></textarea>
+        `
+      }
+
       let Note = {
+        components: {
+          'editor': Editor
+        },
+
         props: [
           'noteObject'
         ],
@@ -31,12 +41,13 @@
         template: `
           <div class="note__wrapper">
             <div class="note__header">
-              <a href="#" class="note">
+              <a href="#" class="note" @click.prevent="open = !open">
                 <span>{{note.body || 'Empty note'}}</span>
                 <span>5 words</span>
               </a>
               <a href="#" class="note__delete" v-if="open">Delete note</a>
             </div>
+            <editor v-if="open"></editor>
           </div>
         `
       }
