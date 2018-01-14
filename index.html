@@ -76,7 +76,7 @@
           <div class="note__wrapper">
             <div class="note__header">
               <a href="#" class="note" @click.prevent="open = !open">
-                <span>{{note.body || 'Empty note'}}</span>
+                <span>{{ _.truncate(note.body, { length:30 }) || 'Empty note' }}</span>
                 <span>{{wordCount}} words</span>
               </a>
               <a href="#" class="note__delete" v-if="open">Delete note</a>
