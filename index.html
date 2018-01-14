@@ -17,9 +17,32 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
     <script>
       let Editor = {
+        props: [
+          'noteObject'
+        ],
+
+        data() {
+          return {
+            note: this.noteObject
+          }
+        },
+
         template: `
-          <textarea class="editor" rows="10" placeholder="Write a note"></textarea>
-        `
+          <textarea
+          v-model="note.body"
+          class="editor"
+          rows="10"
+          placeholder="Write a note"
+          @input="update">
+
+          </textarea>
+        `,
+
+        methods: {
+          update () {
+            this.$emit('update', this.note.id)
+          }
+        }
       }
 
       let Note = {
@@ -47,9 +70,27 @@
               </a>
               <a href="#" class="note__delete" v-if="open">Delete note</a>
             </div>
-            <editor v-if="open"></editor>
+            <editor
+            v-if="open"
+            :note-object="note"
+            v-on:update="saveNote"
+            ></editor>
           </div>
-        `
+        `,
+
+        methods: {
+          saveNote (noteId) {
+            let notes = JSON.parse(localStorage.getItem('notes')) || []
+
+            notes.map((note) => {
+              if (note.id === this.note.id) {
+                note.body = this.note.body
+              }
+            })
+
+            localStorage.setItem('notes', JSON.stringify(notes))
+          }
+        }
       }
 
       let Notes = {
