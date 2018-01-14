@@ -15,6 +15,7 @@
 
     <script src="https://unpkg.com/vue"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pluralize/6.0.0/pluralize.min.js"></script>
     <script>
       let Editor = {
         props: [
@@ -61,12 +62,22 @@
           }
         },
 
+        computed: {
+          wordCount() {
+            if (!this.note.body.trim()) {
+              return 0
+            }
+
+            return this.note.body.trim().split(' ').length
+          }
+        },
+
         template: `
           <div class="note__wrapper">
             <div class="note__header">
               <a href="#" class="note" @click.prevent="open = !open">
                 <span>{{note.body || 'Empty note'}}</span>
-                <span>5 words</span>
+                <span>{{wordCount}} words</span>
               </a>
               <a href="#" class="note__delete" v-if="open">Delete note</a>
             </div>
@@ -121,7 +132,8 @@
             })
 
             localStorage.setItem('notes', JSON.stringify(this.notes))
-          }
+          },
+
         }
       }
 
