@@ -6,75 +6,7 @@
 
     <link href="https://fonts.googleapis.com/css?family=Zilla+Slab" rel="stylesheet">
 
-    <style>
-            * {
-                box-sizing: border-box;
-            }
-
-            body {
-                font-family: 'Zilla Slab', serif;
-            }
-
-            .notes__new {
-                display: block;
-                background: #fff;
-                padding: 20px;
-                border: 2px solid #e0e0e0;
-                color: inherit;
-                text-decoration: none;
-                text-align: center;
-                width: 100%;
-                margin-bottom: 2px;
-            }
-
-            .note {
-                display: flex;
-                justify-content: space-between;
-                background: #fff;
-                padding: 20px;
-                border: 2px solid #e0e0e0;
-                border-bottom: 0;
-                color: inherit;
-                text-decoration: none;
-                width: 100%;
-            }
-
-            .note__header {
-                display: flex;
-                flex-direction: row;
-            }
-
-            .note__wrapper:last-child .note {
-                border-bottom: 2px solid #e0e0e0;
-            }
-
-            .note__delete {
-                padding: 20px;
-                text-decoration: none;
-                border: 2px solid #e0e0e0;
-                border-left: 0;
-                color: inherit;
-                text-align: center;
-                min-width: 150px;
-            }
-
-            .editor {
-                width: 100%;
-                font: inherit;
-                border: 0;
-                outline: none;
-                padding: 20px;
-                border: 2px solid #e0e0e0;
-                border-bottom: 0;
-                border-top: 0;
-                resize: vertical;
-                vertical-align: top;
-            }
-
-            .note__wrapper:last-child .editor {
-                border-bottom: 2px solid #e0e0e0;
-            }
-        </style>
+    <link rel="stylesheet" href="css/app.css">
   </head>
   <body>
     <div id="app">
@@ -84,10 +16,39 @@
     <script src="https://unpkg.com/vue"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
     <script>
-      let Notes = {
+      let Note = {
+        props: [
+          'noteObject'
+        ],
+
         data() {
           return {
-            notes: []
+            open: false,
+            note: this.noteObject
+          }
+        },
+
+        template: `
+          <div class="note__wrapper">
+            <div class="note__header">
+              <a href="#" class="note">
+                <span>{{note.body || 'Empty note'}}</span>
+                <span>5 words</span>
+              </a>
+              <a href="#" class="note__delete" v-if="open">Delete note</a>
+            </div>
+          </div>
+        `
+      }
+
+      let Notes = {
+        components: {
+          'note': Note
+        },
+
+        data() {
+          return {
+            notes: JSON.parse(localStorage.getItem('notes')) || []
           }
         },
 
@@ -96,6 +57,7 @@
             <a class="notes__new" href="#" @click.prevent="newNote">
               Create a new note
             </a>
+            <note v-for="note in notes" :note-object="note" :key="note.id"></note>
           </div>
         `,
 
